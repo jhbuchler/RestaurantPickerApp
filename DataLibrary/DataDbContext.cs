@@ -12,6 +12,9 @@ namespace DataLibrary
         //Example: Categories:
         public DbSet<Category> Categories { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Cuisine> Cuisines { get; set; }
+        public DbSet<Convenience> Conveniences { get; set; }
 
         public DataDbContext() : base()
         { 
@@ -53,6 +56,33 @@ namespace DataLibrary
                 x.HasData(new Category() { Id = 1, Name = "Books" },
                             new Category() { Id = 2, Name = "Movies" },
                             new Category() { Id = 3, Name = "Games" }
+                );
+            });
+
+            modelBuilder.Entity<Cuisine>(x =>
+            {
+                x.HasData(new Cuisine() { Id = 1, Type = "Italian" },
+                            new Cuisine() { Id = 2, Type = "American" },
+                            new Cuisine() { Id = 3, Type = "Mexican" },
+                            new Cuisine() { Id = 4, Type = "Korean"},
+                            new Cuisine() { Id = 5, Type = "Chinese"}
+                );
+            });
+
+            modelBuilder.Entity<Convenience>(x =>
+            {
+                x.HasData(new Convenience() { Id = 1, Type = "Sit Down" },
+                            new Convenience() { Id = 2, Type = "Take Out" },
+                            new Convenience() { Id = 3, Type = "Fast Food" }
+                );
+            });
+
+            modelBuilder.Entity<Restaurant>(x =>
+            {
+                x.HasData(new Restaurant() { Id = 1, Name = "Olive Garden", Price=2, ConvenienceId=1, CuisineId=1 },
+                            new Restaurant() { Id = 2, Name = "Taco Bell", Price = 1, ConvenienceId = 3, CuisineId = 3 },
+                            new Restaurant() { Id = 3, Name = "Ruth's Chriss", Price = 3, ConvenienceId = 1, CuisineId = 2 },
+                            new Restaurant() { Id = 4, Name = "Cookout", Price = 1, ConvenienceId = 2, CuisineId = 2 }
                 );
             });
 
