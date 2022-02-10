@@ -43,6 +43,14 @@ namespace MyDataManagerWinForms
             //List<string> prices = new List<string>() { "$", "$$", "$$$" };
             pricePointComboBox.DataSource = Enum.GetValues(typeof(Price));
 
+            using (var db = new DataDbContext(_optionsBuilder.Options))
+            {
+                convenience = db.Conveniences.OrderBy(x => x.Type).ToList();
+                ConvenienceComboBox.DataSource = convenience;
+                //Items = db.Items.ToList();
+                //cboCategories.DataSource = Categories;
+            }
+
         }
 
         private void cboCategories_SelectedIndexChanged(object sender, EventArgs e)
@@ -92,6 +100,32 @@ namespace MyDataManagerWinForms
 
         private void ConvenienceComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+           
+        }
+
+        private void testButton_Click(object sender, EventArgs e)
+        {
+
+            //label1.Text = ConvenienceComboBox.SelectedValue.ToString();
+            label1.Text = ((int)pricePointComboBox.SelectedValue).ToString();
+            //label1.Text = CusineComboBox1.SelectedValue.ToString();
+
+            var priceValue = (int)pricePointComboBox.SelectedValue;
+
+            using (var db = new DataDbContext(_optionsBuilder.Options))
+            {
+                var resteraunts = db.Restaurants.Where(x => x.Price == priceValue).OrderBy(x => x.Name).ToList();
+                dgItems.DataSource = resteraunts;
+                //Items = db.Items.ToList();
+                //cboCategories.DataSource = Categories;
+            }
+
+            //var testTheory = $"{ConvenienceComboBox.SelectedValue.ToString()}" +
+            //                  $"{priceValue}" +
+            //                    $"{CusineComboBox1.SelectedValue.ToString}";
+
+
+
 
         }
     }

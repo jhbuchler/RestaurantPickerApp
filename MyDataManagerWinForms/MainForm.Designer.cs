@@ -37,6 +37,8 @@
             this.priceLabel = new System.Windows.Forms.Label();
             this.conveniencelabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.testButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgItems)).BeginInit();
             this.SuspendLayout();
@@ -116,11 +118,32 @@
             this.label3.TabIndex = 14;
             this.label3.Text = "Cuisine";
             // 
+            // testButton
+            // 
+            this.testButton.Location = new System.Drawing.Point(370, 335);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(75, 23);
+            this.testButton.TabIndex = 15;
+            this.testButton.Text = "Test Button";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.Click += new System.EventHandler(this.testButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(390, 305);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 15);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "label1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 690);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.testButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.conveniencelabel);
             this.Controls.Add(this.priceLabel);
@@ -148,5 +171,7 @@
         private Label priceLabel;
         private Label conveniencelabel;
         private Label label3;
+        private Button testButton;
+        private Label label1;
     }
 }
