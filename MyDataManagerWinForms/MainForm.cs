@@ -6,6 +6,8 @@ using System.Diagnostics;
 
 namespace MyDataManagerWinForms
 {
+    public delegate void RespondToMessageEvent(string message);
+
     public partial class MainForm : Form
     {
         private static IConfigurationRoot _configuration;
@@ -26,6 +28,11 @@ namespace MyDataManagerWinForms
             _configuration = ConfigurationBuilderSingleton.ConfigurationRoot;
             _optionsBuilder = new DbContextOptionsBuilder<DataDbContext>();
             _optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MyDataManagerData"));
+        }
+        private void RespondToMessage(string message)
+        {
+            MessageBox.Show(message);
+            Refresh();
         }
           
         private void MainForm_Load(object sender, EventArgs e)
@@ -115,7 +122,9 @@ namespace MyDataManagerWinForms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+
             AddUpdateForm addupdate = new AddUpdateForm();
+            addupdate.Responding += new RespondToMessageEvent(RespondToMessage);
             addupdate.ShowDialog();
         }
 
@@ -131,6 +140,7 @@ namespace MyDataManagerWinForms
                     if (restaurant != null)
                     {
                         AddUpdateForm addupdate = new AddUpdateForm(restaurant);
+                        addupdate.Responding += new RespondToMessageEvent(RespondToMessage);
                         addupdate.ShowDialog();
                     }
                 }
@@ -160,6 +170,7 @@ namespace MyDataManagerWinForms
                         {
                             db.Restaurants.Remove(restaurant);
                             db.SaveChanges();
+                            Refresh();
                         }
                     }
                 }

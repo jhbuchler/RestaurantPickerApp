@@ -20,6 +20,8 @@ namespace MyDataManagerWinForms
         private static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
         private IList<Cuisine> Cuisines = new List<Cuisine>();
         private IList<Convenience> convenience = new List<Convenience>();
+        public event RespondToMessageEvent Responding;
+
         //private bool updating;
         private Restaurant updateRestaurant;
         public AddUpdateForm()
@@ -85,6 +87,11 @@ namespace MyDataManagerWinForms
                         restaurant.Convenience = (Convenience)ConvenienceComboBox.SelectedItem;
                         restaurant.Cuisine = (Cuisine)CuisineComboBox.SelectedItem;
                         db.SaveChanges();
+
+                        if(Responding != null)
+                        {
+                            Responding.Invoke("Updated");
+                        }
                     }
                 }
                 this.Close();
@@ -113,6 +120,10 @@ namespace MyDataManagerWinForms
                     {
                         db.Add(_restaurant);
                         db.SaveChanges();
+                        if (Responding != null)
+                        {
+                            Responding.Invoke("Added");
+                        }
                     }
 
                     MessageBox.Show("Restaurant added.");
