@@ -145,6 +145,7 @@
             this.Controls.Add(this.CuisineComboBox);
             this.Name = "AddUpdateForm";
             this.Text = "AddUpdateForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddUpdateForm_FormClosed);
             this.Load += new System.EventHandler(this.AddUpdateForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

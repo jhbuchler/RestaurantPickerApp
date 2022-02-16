@@ -20,10 +20,23 @@ namespace MyDataManagerWinForms
         private static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
         private IList<Cuisine> Cuisines = new List<Cuisine>();
         private IList<Convenience> convenience = new List<Convenience>();
-
+        //private bool updating;
+        private Restaurant updateRestaurant;
         public AddUpdateForm()
         {
             InitializeComponent();
+            //updating = false;
+        }
+
+        public AddUpdateForm(Restaurant restaurant)
+        {
+            InitializeComponent();
+            txtBoxName.Text = restaurant.Name;
+            pricePointComboBox.SelectedItem = restaurant.Price;
+            ConvenienceComboBox.SelectedItem = restaurant.Convenience;
+            CuisineComboBox.SelectedItem = restaurant.Cuisine;
+            updateRestaurant = restaurant;
+            //updating = true;
         }
 
         static void BuildOptions()
@@ -35,8 +48,6 @@ namespace MyDataManagerWinForms
 
         private void AddUpdateForm_Load(object sender, EventArgs e)
         {
-
-
             BuildOptions();
 
             using (var db = new DataDbContext(_optionsBuilder.Options))
@@ -61,57 +72,59 @@ namespace MyDataManagerWinForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtBoxName.Text))
+            if (updateRestaurant != null)
             {
-                MessageBox.Show("Please enter the name of the restaurant.");
+                //update stuff
+                using (var db = new DataDbContext(_optionsBuilder.Options))
+                {
+                    var restaurant = db.Restaurants.SingleOrDefault(x => x.Id == updateRestaurant.Id); 
+                    if (restaurant != null)
+                    {
+                        restaurant.Name = txtBoxName.Text;
+                        restaurant.Price = (int)pricePointComboBox.SelectedItem;
+                        restaurant.Convenience = (Convenience)ConvenienceComboBox.SelectedItem;
+                        restaurant.Cuisine = (Cuisine)CuisineComboBox.SelectedItem;
+                        db.SaveChanges();
+                    }
+                }
+                this.Close();
             }
             else
             {
-                //actually add something
-                var _restaurant = new Restaurant();
-                _restaurant.Price = (int)this.pricePointComboBox.SelectedItem;
-                //var x = this.ConvenienceComboBox.SelectedItem;
-                //_restaurant.ConvenienceId = this.ConvenienceComboBox.SelectedIndex;
-                //this.ConvenienceComboBox.Text = _restaurant.Convenience.ToString();
-                switch (this.ConvenienceComboBox.Text)
+                if (string.IsNullOrEmpty(txtBoxName.Text))
                 {
-                    case "Sit Down":
-                        _restaurant.ConvenienceId = 1;
-                        break;
-                    case "Take Out":
-                        _restaurant.ConvenienceId = 2;
-                        break;
-                    case "Fast Food":
-                        _restaurant.ConvenienceId = 3;
-                        break;
+                    MessageBox.Show("Please enter the name of the restaurant.");
                 }
-                //this.CuisineComboBox.Text = _restaurant.CuisineId;
-                switch (this.CuisineComboBox.Text)
+                else
                 {
-                    case "Italian":
-                        _restaurant.CuisineId = 1;
-                        break;
-                    case "American":
-                        _restaurant.CuisineId = 2;
-                        break;
-                    case "Mexican":
-                        _restaurant.CuisineId = 3;
-                        break;
-                    case "Korean":
-                        _restaurant.CuisineId = 4;
-                        break;
-                    case "Chinese":
-                        _restaurant.CuisineId = 5;
-                        break;
-                }
-                _restaurant.Name = txtBoxName.Text;
+                    //actually add something
+                    var _restaurant = new Restaurant();
 
-                using (var db = new DataDbContext(_optionsBuilder.Options))
-                {
-                    db.Add(_restaurant);
-                    db.SaveChanges();
+                    var selectedConv = (Convenience)ConvenienceComboBox.SelectedItem;
+                    var selectedCuis = (Cuisine)CuisineComboBox.SelectedItem;
+                    var selectedPrice = (int)this.pricePointComboBox.SelectedItem;
+
+                    _restaurant.Price = selectedPrice;
+                    _restaurant.ConvenienceId = selectedConv.Id;
+                    _restaurant.CuisineId = selectedCuis.Id;
+                    _restaurant.Name = txtBoxName.Text;
+
+                    using (var db = new DataDbContext(_optionsBuilder.Options))
+                    {
+                        db.Add(_restaurant);
+                        db.SaveChanges();
+                    }
+
+                    MessageBox.Show("Restaurant added.");
+                    this.Close();
                 }
             }
+            
+        }
+
+        private void AddUpdateForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //MainForm.Refresh();???
         }
     }
 }

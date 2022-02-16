@@ -49,6 +49,7 @@ namespace MyDataManagerWinForms
 
             //dgv fixes
             dgItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgItems.ReadOnly = true;
         }
 
         private void cboCategories_SelectedIndexChanged(object sender, EventArgs e)
@@ -68,25 +69,29 @@ namespace MyDataManagerWinForms
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            //testing output
-            //label1.Text = ((int)pricePointComboBox.SelectedValue).ToString() +
-            //    " " + ConvenienceComboBox.SelectedValue.ToString() +
-            //    " " + CuisineComboBox.SelectedValue.ToString();
+            Refresh();
+        }
 
-            var priceValue = (int)pricePointComboBox.SelectedValue;
+        private void Refresh()
+        {
+            var priceValue = (Price)pricePointComboBox.SelectedValue;
             var convValue = ConvenienceComboBox.SelectedValue;
             var cuisValue = CuisineComboBox.SelectedValue;
 
             using (var db = new DataDbContext(_optionsBuilder.Options))
             {
-                    restaurants = db.Restaurants.Where(x => x.Price == priceValue)
-                    .Where(x => x.Convenience == convValue)
-                    .Where(x => x.Cuisine == cuisValue).OrderBy(x => x.Name).ToList();
-                                    
-                dgItems.DataSource = restaurants;
-            }
+                var restaurantSearch = db.Restaurants
+                    .Select(x => new
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Price = (Price)x.Price,
+                        Convenience = x.Convenience,
+                        Cuisine = x.Cuisine
+                    }).Where(x => x.Price == priceValue && x.Convenience == convValue && x.Cuisine == cuisValue).OrderBy(x => x.Name).ToList();
 
-            //msgbox telling the user there's nothing returned in the search
+                dgItems.DataSource = restaurantSearch;
+            }
         }
 
         private void btnSurpriseMe_Click(object sender, EventArgs e)
@@ -118,8 +123,17 @@ namespace MyDataManagerWinForms
         {
             if (IsSelected())
             {
-                AddUpdateForm addupdate = new AddUpdateForm();
-                addupdate.ShowDialog();
+                var restaurantData = dgItems.SelectedRows[0].Cells;
+                var updateId = (int)restaurantData[0].Value;
+                using (var db = new DataDbContext(_optionsBuilder.Options))
+                {
+                    var restaurant = db.Restaurants.SingleOrDefault(x => x.Id == updateId);
+                    if (restaurant != null)
+                    {
+                        AddUpdateForm addupdate = new AddUpdateForm(restaurant);
+                        addupdate.ShowDialog();
+                    }
+                }
             }
             else
             {
@@ -132,10 +146,23 @@ namespace MyDataManagerWinForms
         {
             if (IsSelected())
             {
+                var restaurantData = dgItems.SelectedRows[0].Cells;
                 //ask user to confirm deletion
                 var userSelection = MessageBox.Show($"Delete selected restaurant from the database?", "Confirm Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                 //delete the selected restaurant from the database
-
+                if (userSelection == DialogResult.OK)
+                {
+                    var deleteId = (int)restaurantData[0].Value;
+                    using (var db = new DataDbContext(_optionsBuilder.Options))
+                    {
+                        var restaurant = db.Restaurants.SingleOrDefault(x => x.Id == deleteId);
+                        if (restaurant != null)
+                        {
+                            db.Restaurants.Remove(restaurant);
+                            db.SaveChanges();
+                        }
+                    }
+                }
             }
             else
             {
@@ -156,5 +183,6 @@ namespace MyDataManagerWinForms
         {
             MessageBox.Show("Nothing is selected.");
         }
+
     }
 }
