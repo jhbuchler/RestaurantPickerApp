@@ -10,7 +10,8 @@ namespace MyDataManagerWinForms
     {
         private static IConfigurationRoot _configuration;
         private static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
-
+        Random rand = new Random();
+        private static List<Restaurant> restaurants;
         private IList<Cuisine> Cuisines = new List<Cuisine>();
         //private IList<Price> pricePoint = new List<Price>();
         private IList<Convenience> convenience = new List<Convenience>();
@@ -35,22 +36,19 @@ namespace MyDataManagerWinForms
             using (var db = new DataDbContext(_optionsBuilder.Options))
             {
                 Cuisines = db.Cuisines.OrderBy(x => x.Type).ToList();
-                CusineComboBox1.DataSource = Cuisines;
-                //Items = db.Items.ToList();
-                //cboCategories.DataSource = Categories;
+                CuisineComboBox.DataSource = Cuisines;
             }
-            //preload test data
-            //List<string> prices = new List<string>() { "$", "$$", "$$$" };
+            
             pricePointComboBox.DataSource = Enum.GetValues(typeof(Price));
 
             using (var db = new DataDbContext(_optionsBuilder.Options))
             {
                 convenience = db.Conveniences.OrderBy(x => x.Type).ToList();
                 ConvenienceComboBox.DataSource = convenience;
-                //Items = db.Items.ToList();
-                //cboCategories.DataSource = Categories;
             }
 
+            //dgv fixes
+            dgItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
 
         private void cboCategories_SelectedIndexChanged(object sender, EventArgs e)
@@ -68,65 +66,95 @@ namespace MyDataManagerWinForms
             //dgItems.DataSource = curData;
         }
 
-        private void dgItems_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnSearch_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void highPriceRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CusineComboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pricePointComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ConvenienceComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void testButton_Click(object sender, EventArgs e)
-        {
-
-            //label1.Text = ConvenienceComboBox.SelectedValue.ToString();
-            label1.Text = ((int)pricePointComboBox.SelectedValue).ToString();
-            //label1.Text = CusineComboBox1.SelectedValue.ToString();
+            //testing output
+            //label1.Text = ((int)pricePointComboBox.SelectedValue).ToString() +
+            //    " " + ConvenienceComboBox.SelectedValue.ToString() +
+            //    " " + CuisineComboBox.SelectedValue.ToString();
 
             var priceValue = (int)pricePointComboBox.SelectedValue;
+            var convValue = ConvenienceComboBox.SelectedValue;
+            var cuisValue = CuisineComboBox.SelectedValue;
 
             using (var db = new DataDbContext(_optionsBuilder.Options))
             {
-                var resteraunts = db.Restaurants.Where(x => x.Price == priceValue).OrderBy(x => x.Name).ToList();
-                dgItems.DataSource = resteraunts;
-                //Items = db.Items.ToList();
-                //cboCategories.DataSource = Categories;
+                    restaurants = db.Restaurants.Where(x => x.Price == priceValue)
+                    .Where(x => x.Convenience == convValue)
+                    .Where(x => x.Cuisine == cuisValue).OrderBy(x => x.Name).ToList();
+                                    
+                dgItems.DataSource = restaurants;
             }
 
-            //var testTheory = $"{ConvenienceComboBox.SelectedValue.ToString()}" +
-            //                  $"{priceValue}" +
-            //                    $"{CusineComboBox1.SelectedValue.ToString}";
+            //msgbox telling the user there's nothing returned in the search
+        }
 
+        private void btnSurpriseMe_Click(object sender, EventArgs e)
+        {
+            //if list is full, return one at random. otherwise, return random restaurant from entire db
+            if (restaurants?.Count > 0)
+            {
+                MessageBox.Show(restaurants[rand.Next(restaurants.Count)].ToString());
+            }
+            else
+            {
+                using (var db = new DataDbContext(_optionsBuilder.Options))
+                {
+                    restaurants = db.Restaurants.ToList();
+                    var choice = rand.Next(restaurants.Count);
 
+                    MessageBox.Show(restaurants[choice].ToString());
+                }
+            }
+        }
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            AddUpdateForm addupdate = new AddUpdateForm();
+            addupdate.ShowDialog();
+        }
 
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (IsSelected())
+            {
+                AddUpdateForm addupdate = new AddUpdateForm();
+                addupdate.ShowDialog();
+            }
+            else
+            {
+                NothingSelected();
+            }
+            
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (IsSelected())
+            {
+                //ask user to confirm deletion
+                var userSelection = MessageBox.Show($"Delete selected restaurant from the database?", "Confirm Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                //delete the selected restaurant from the database
+
+            }
+            else
+            {
+                NothingSelected();
+            }
+        }
+
+        private bool IsSelected()
+        {
+            if (dgItems.SelectedRows.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void NothingSelected()
+        {
+            MessageBox.Show("Nothing is selected.");
         }
     }
 }

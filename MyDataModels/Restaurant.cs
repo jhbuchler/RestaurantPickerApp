@@ -25,6 +25,11 @@ namespace MyDataModels
 
         public virtual Cuisine? Cuisine { get; set; }
         public virtual Convenience? Convenience { get; set; }
+
+        public override string ToString()
+        {
+            return Name.ToString();
+        }
     }
 
     public enum Price
@@ -34,4 +39,5 @@ namespace MyDataModels
         high = 3
                 
     }
+
 }
