@@ -26,4 +26,12 @@ namespace MyDataModels
         public virtual Cuisine? Cuisine { get; set; }
         public virtual Convenience? Convenience { get; set; }
     }
+
+    public enum Price
+    {
+        low = 1,
+        medium = 2,
+        high = 3
+                
+    }
 }

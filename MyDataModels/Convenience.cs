@@ -16,5 +16,12 @@ namespace MyDataModels
         public string Type { get; set; }
 
         public virtual List<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
+
+        public override string ToString()
+        {
+            return Type;
+        }
     }
+
+
 }
