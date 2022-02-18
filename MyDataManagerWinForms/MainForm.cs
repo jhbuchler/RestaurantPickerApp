@@ -17,6 +17,7 @@ namespace MyDataManagerWinForms
         private IList<Cuisine> Cuisines = new List<Cuisine>();
         //private IList<Price> pricePoint = new List<Price>();
         private IList<Convenience> convenience = new List<Convenience>();
+        
 
         public MainForm()
         {
@@ -195,5 +196,10 @@ namespace MyDataManagerWinForms
             MessageBox.Show("Nothing is selected.");
         }
 
+        private void LoadData_Click(object sender, EventArgs e)
+        {
+            var gettingData = new GetData();
+            gettingData.GetDataAsync();
+        }
     }
 }
