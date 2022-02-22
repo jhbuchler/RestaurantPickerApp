@@ -42,6 +42,7 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.LoadData = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgItems)).BeginInit();
             this.SuspendLayout();
@@ -166,11 +167,22 @@
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
+            // LoadData
+            // 
+            this.LoadData.Location = new System.Drawing.Point(514, 120);
+            this.LoadData.Name = "LoadData";
+            this.LoadData.Size = new System.Drawing.Size(86, 30);
+            this.LoadData.TabIndex = 22;
+            this.LoadData.Text = "Load Data";
+            this.LoadData.UseVisualStyleBackColor = true;
+            this.LoadData.Click += new System.EventHandler(this.LoadData_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(810, 468);
+            this.Controls.Add(this.LoadData);
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnAdd);
@@ -208,5 +220,6 @@
         private Button btnAdd;
         private Button btnDelete;
         private Button btnUpdate;
+        private Button LoadData;
     }
 }
