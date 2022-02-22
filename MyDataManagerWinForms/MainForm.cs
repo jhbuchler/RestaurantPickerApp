@@ -11,7 +11,7 @@ namespace MyDataManagerWinForms
     public partial class MainForm : Form
     {
         private static IConfigurationRoot _configuration;
-        private static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
+        public static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
         Random rand = new Random();
         private static List<Restaurant> restaurants;
         private IList<Cuisine> Cuisines = new List<Cuisine>();

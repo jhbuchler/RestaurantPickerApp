@@ -16,7 +16,7 @@ namespace MyDataModels
         [StringLength(50)]
         public string Name { get; set; }
         [Required]
-        [Range(1, 3)]
+        [Range(1, 4)]
         public int Price { get; set; }
         [Required]
         public int CuisineId { get; set; }
@@ -36,6 +36,7 @@ namespace MyDataModels
     {
         low = 1,
         medium = 2,
-        high = 3
+        high = 3,
+        unknown = 4
     }
 }

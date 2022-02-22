@@ -59,7 +59,8 @@ namespace DataLibrary
                             new Cuisine() { Id = 2, Type = "American" },
                             new Cuisine() { Id = 3, Type = "Mexican" },
                             new Cuisine() { Id = 4, Type = "Korean"},
-                            new Cuisine() { Id = 5, Type = "Chinese"}
+                            new Cuisine() { Id = 5, Type = "Chinese"},
+                            new Cuisine() { Id = 6, Type = "Unassigned"}
                 );
             });
 
@@ -67,7 +68,8 @@ namespace DataLibrary
             {
                 x.HasData(new Convenience() { Id = 1, Type = "Sit Down" },
                             new Convenience() { Id = 2, Type = "Take Out" },
-                            new Convenience() { Id = 3, Type = "Fast Food" }
+                            new Convenience() { Id = 3, Type = "Fast Food" },
+                            new Convenience() { Id = 4, Type = "Unassigned"}
                 );
             });
 

@@ -16,45 +16,10 @@ namespace DataLibrary.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("MyDataModels.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Books"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Movies"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Games"
-                        });
-                });
 
             modelBuilder.Entity("MyDataModels.Convenience", b =>
                 {
@@ -88,6 +53,11 @@ namespace DataLibrary.Migrations
                         {
                             Id = 3,
                             Type = "Fast Food"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Type = "Unassigned"
                         });
                 });
 
@@ -133,109 +103,11 @@ namespace DataLibrary.Migrations
                         {
                             Id = 5,
                             Type = "Chinese"
-                        });
-                });
-
-            modelBuilder.Entity("MyDataModels.Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Items");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Name = "The Lord of the Rings"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 1,
-                            Name = "The Sword of Shannara"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 2,
-                            Name = "Top Gun"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 3,
-                            Name = "World of Tanks"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 2,
-                            Name = "Inception"
                         },
                         new
                         {
                             Id = 6,
-                            CategoryId = 2,
-                            Name = "Tenet"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 3,
-                            Name = "Wordle"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 1,
-                            Name = "Programming in C#"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CategoryId = 1,
-                            Name = "Pro GIT"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CategoryId = 2,
-                            Name = "Batman Begins"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CategoryId = 2,
-                            Name = "Man of Steel"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CategoryId = 3,
-                            Name = "Monopoly"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CategoryId = 3,
-                            Name = "Suburbia"
+                            Type = "Unassigned"
                         });
                 });
 
@@ -304,17 +176,6 @@ namespace DataLibrary.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MyDataModels.Item", b =>
-                {
-                    b.HasOne("MyDataModels.Category", "Category")
-                        .WithMany("Items")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("MyDataModels.Restaurant", b =>
                 {
                     b.HasOne("MyDataModels.Convenience", "Convenience")
@@ -332,11 +193,6 @@ namespace DataLibrary.Migrations
                     b.Navigation("Convenience");
 
                     b.Navigation("Cuisine");
-                });
-
-            modelBuilder.Entity("MyDataModels.Category", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("MyDataModels.Convenience", b =>
