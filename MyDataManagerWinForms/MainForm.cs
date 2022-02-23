@@ -1,6 +1,7 @@
 using DataLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MyDataManagerDataOperations;
 using MyDataModels;
 using System.Diagnostics;
 
@@ -13,17 +14,17 @@ namespace MyDataManagerWinForms
         private static IConfigurationRoot _configuration;
         public static DbContextOptionsBuilder<DataDbContext> _optionsBuilder;
         Random rand = new Random();
-        private static List<Restaurant> restaurants;
+        private static List<Restaurant> restaurants; 
         private IList<Cuisine> Cuisines = new List<Cuisine>();
         //private IList<Price> pricePoint = new List<Price>();
         private IList<Convenience> convenience = new List<Convenience>();
-        
 
         public MainForm()
         {
             InitializeComponent();
+            
         }
-
+        
         static void BuildOptions()
         {
             _configuration = ConfigurationBuilderSingleton.ConfigurationRoot;
@@ -35,27 +36,22 @@ namespace MyDataManagerWinForms
             MessageBox.Show(message);
             Refresh();
         }
-          
         private void MainForm_Load(object sender, EventArgs e)
         {
             BuildOptions();
 
-            //load categories
-            using (var db = new DataDbContext(_optionsBuilder.Options))
-            {
-                Cuisines = db.Cuisines.OrderBy(x => x.Type).ToList();
-                CuisineComboBox.DataSource = Cuisines;
-            }
-            
+            var dataoperations = new DataOperations();
+            Cuisines = dataoperations.GetCuisines().Result;
+            CuisineComboBox.DataSource = Cuisines;
+          
             pricePointComboBox.DataSource = Enum.GetValues(typeof(Price));
 
-            using (var db = new DataDbContext(_optionsBuilder.Options))
-            {
-                convenience = db.Conveniences.OrderBy(x => x.Type).ToList();
-                ConvenienceComboBox.DataSource = convenience;
-            }
+            convenience = dataoperations.GetConveniences().Result;
+            ConvenienceComboBox.DataSource = convenience;
 
-            //dgv fixes
+            restaurants = dataoperations.GetRestaurants();
+            
+
             dgItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgItems.ReadOnly = true;
         }
@@ -96,7 +92,7 @@ namespace MyDataManagerWinForms
                         Price = (Price)x.Price,
                         Convenience = x.Convenience,
                         Cuisine = x.Cuisine
-                    }).Where(x => x.Price == priceValue && x.Convenience == convValue && x.Cuisine == cuisValue).OrderBy(x => x.Name).ToList();
+                    }).Where(x => x.Price == priceValue && x.Convenience == convValue && x.Cuisine == cuisValue).OrderBy(x => x.Name).ToListAsync().Result;
 
                 dgItems.DataSource = restaurantSearch;
             }
@@ -111,16 +107,16 @@ namespace MyDataManagerWinForms
             }
             else
             {
-                using (var db = new DataDbContext(_optionsBuilder.Options))
-                {
-                    restaurants = db.Restaurants.ToList();
-                    var choice = rand.Next(restaurants.Count);
 
-                    MessageBox.Show(restaurants[choice].ToString());
-                }
+                //using (var db = new DataDbContext(_optionsBuilder.Options))
+                //{
+                //    restaurants = db.Restaurants.ToListAsync().Result;
+                var choice = rand.Next(restaurants.Count);
+
+                MessageBox.Show(restaurants[choice].ToString());
             }
         }
-
+        
         private void btnAdd_Click(object sender, EventArgs e)
         {
 

@@ -36,6 +36,7 @@
 	
   <ItemGroup>
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
+    <ProjectReference Include="..\MyDataManagerDataOperations\MyDataManagerDataOperations.csproj" />
   </ItemGroup>
 	
   <ItemGroup>
