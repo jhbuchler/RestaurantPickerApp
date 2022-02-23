@@ -41,15 +41,15 @@ namespace MyDataManagerWinForms
             BuildOptions();
 
             var dataoperations = new DataOperations();
-            Cuisines = dataoperations.GetCuisines().Result;
+            Cuisines = Task.Run(() => dataoperations.GetCuisines()).Result;
             CuisineComboBox.DataSource = Cuisines;
           
             pricePointComboBox.DataSource = Enum.GetValues(typeof(Price));
 
-            convenience = dataoperations.GetConveniences().Result;
+            convenience = Task.Run(() => dataoperations.GetConveniences()).Result;
             ConvenienceComboBox.DataSource = convenience;
 
-            restaurants = dataoperations.GetRestaurants();
+            restaurants = Task.Run(() => dataoperations.GetRestaurants()).Result;
             
 
             dgItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
