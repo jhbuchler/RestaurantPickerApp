@@ -55,5 +55,27 @@ namespace MyDataManagerDataOperations
                 return dbContext.Restaurants.OrderBy(x => x.Name).ToList();
             }
         }
+
+        public async Task<List<Restaurant>> GetMatches(int priceValue, Convenience convValue, Cuisine cuisValue)
+        {
+            using (var db = new DataDbContext(_optionsBuilder.Options))
+            {
+                
+                return await db.Restaurants
+                    .Select(x => new Restaurant
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Price = x.Price,
+                        Convenience = x.Convenience,
+                        Cuisine = x.Cuisine,
+                        ConvenienceId = x.ConvenienceId,
+                        CuisineId = x.CuisineId
+                    }).Where(x => x.Price == priceValue && x.Convenience == convValue && x.Cuisine == cuisValue)
+                    .OrderBy(x => x.Name).ToListAsync();
+
+                
+            }
+        }
     }
 }
